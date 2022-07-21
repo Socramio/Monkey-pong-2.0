@@ -7,7 +7,7 @@ var gameFrames = 0;
 var gameSpeed = 1;
 
 var playerKeys = {
-    upPressed : false,
+    upPressed : true,
     downPressed : false,
 }
 
@@ -18,29 +18,28 @@ window.onload = function(){
 function startGame(){
     canvas = document.getElementById("myCanvas");
     ctx = canvas.getContext("2d");
-    document.addEventListener("keydown", keyDownPressedPlayer1, false);
-    document.addEventListener("keyup", keyUpPressedPlayer1, false);
-    // document.addEventListener("keyright", keyRightPressed, false);
-    // document.addEventListener("keyleft", keyLeftPressed, false);
+    document.addEventListener("keydown", keyDownPressed, true);
     gameLoop();
 }
 
-function keyDownPressedPlayer1(e){
-    if(e.keyCode == 87){
-        if(player1.y > 0){
-            player1.y -= player1.speed;
-        }
+function keyDownPressed(e){
+    if(e.keyCode == 87){     
+            player1.direction = "up";
     }
     if(e.keyCode == 83){
-        if(player1.y < canvasHeight - player1.height){
-            player1.y += player1.speed;
-        }
+            player1.direction = "down";
     }
+    if(e.keyCode == 38){
+            player2.direction = "up";
+    }
+    if(e.keyCode == 40){
+            player2.direction = "down";
+    }
+    player1.move();
+    player2.move();
 }
 
-function keyUpPressedPlayer1(e){
 
-}
 
 //para que no se quede el fondo borroso al actualizar frames 0 = x y = x, coordenadas de esquina inferior derecha y superior derecha
 function clearGame(){
@@ -51,9 +50,10 @@ function clearGame(){
 function drawGame(){
     player1.draw();
     player2.draw();
+    middle.draw();
     ball.draw();
-    drawNewText(player1.score, 250, 120);
-    drawNewText(player2.score, 750, 120);
+    drawNewText(player1.score, 400, 120);
+    drawNewText(player2.score, 600, 120);
 }
 
 function updateGame(){
@@ -62,7 +62,6 @@ function updateGame(){
         ball.vx = ball.vx * -1;
         ball.vy = ball.vy * 1;
     }
-    player2.y = ball.y; - player2/2;
     if(ball.x < -40){
         player2.score = player2.score + 1;
         gameBallReset();
@@ -76,9 +75,38 @@ function updateGame(){
 function gameLoop(timeStamp){
     clearGame();
     drawGame();
+    winGame();
     updateGame();
     window.requestAnimationFrame(gameLoop);
 }
+
+function winGame(score){
+    if(player1.score >= 5){
+        window.alert("Player 1 wins!")
+    } else if(player2.score >= 5){
+        window.alert("player 2 wins!")
+    }
+}
+
+class Net {
+    constructor (x, y){
+        this.x = x;
+        this.y = y;
+        this.width = 10;
+        this.height = 600;
+        this.color = "gray";
+    }
+    draw(){
+        ctx.save();
+        ctx.fillStyle = this.color;
+        ctx.fillRect(this.x, this.y, this.width, this.height);
+        ctx.fill();
+        ctx.setLineDash([5, 15]);
+        ctx.restore();
+    }
+}
+
+let middle = new Net(canvasWidth/2, 0);
 
 class PlayerMonkey {
     constructor (x, y){
@@ -89,6 +117,30 @@ class PlayerMonkey {
         this.color = "white";
         this.speed = 15;
         this.score = 0;
+        this.time = 0;
+        this.direction = 0;
+    }
+
+    moveUp(){
+        if(this.y > 0){
+            this.y -= this.speed;
+        }
+    }
+
+    moveDown(){
+        if(this.y < canvasHeight - this.height){
+            this.y += this.speed;
+        }
+    }
+
+    move(){
+        if(this.direction === "up"){
+            this.moveUp();
+        }
+
+        if(this.direction === "down") {
+            this.moveDown();
+        }
     }
 
     draw(){
@@ -137,7 +189,7 @@ class ballObject {
 let ball = new ballObject(canvasWidth/2 -15, canvasHeight/2 -15);
 
 function collisionDetection(PlayerMonkey, ball){
-    if(PlayerMonkey.x < ball.x + ball.width && PlayerMonkey.x + PlayerMonkey.width > ball.x && PlayerMonkey.y + PlayerMonkey.height > ball.y && PlayerMonkey.y < ball.y + ball.height){
+    if(PlayerMonkey.x <= ball.x + ball.width && PlayerMonkey.x + PlayerMonkey.width >= ball.x && PlayerMonkey.y + PlayerMonkey.height >= ball.y && PlayerMonkey.y <= ball.y + ball.height){
         return true;
     } else {
         return false;
@@ -145,7 +197,7 @@ function collisionDetection(PlayerMonkey, ball){
 }
 
 function drawNewText(txt, x, y){
-    ctx.font = "120px Bebas Neue";
+    ctx.font = "70px Bebas Neue";
     ctx.fillText(txt, x, y);
     ctx.fillStyle = "white";
 }
@@ -156,3 +208,4 @@ function gameBallReset(){
     ball.vy = ball.vy * -1;
     ball.vx = ball.vx * -1;
 }
+
