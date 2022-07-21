@@ -1,0 +1,17 @@
+body {
+    background-color: white;
+}
+
+#gameArea{
+    margin: 20px auto 20px auto;
+    padding: 0px;
+    width: 1000px;
+    height: 600px;
+}
+
+#myCanvas{
+    width: 1000px;
+    height: 600 px;
+    margin: 0px;
+    background-color: black;
+}
