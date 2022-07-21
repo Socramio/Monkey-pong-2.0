@@ -101,7 +101,6 @@ class Net {
         ctx.fillStyle = this.color;
         ctx.fillRect(this.x, this.y, this.width, this.height);
         ctx.fill();
-        ctx.setLineDash([5, 15]);
         ctx.restore();
     }
 }
@@ -159,8 +158,8 @@ class ballObject {
     constructor (x, y){
         this.x = x;
         this.y = y;
-        this.width = 30;
-        this.height = 30;
+        this.width = 40;
+        this.height = 40;
         this.color = "blue";
         this.speed = 5;
         this.score = 0;
@@ -189,11 +188,17 @@ class ballObject {
 let ball = new ballObject(canvasWidth/2 -15, canvasHeight/2 -15);
 
 function collisionDetection(PlayerMonkey, ball){
-    if(PlayerMonkey.x <= ball.x + ball.width && PlayerMonkey.x + PlayerMonkey.width >= ball.x && PlayerMonkey.y + PlayerMonkey.height >= ball.y && PlayerMonkey.y <= ball.y + ball.height){
-        return true;
-    } else {
-        return false;
-    }
+    return collisionMonkeyBall(PlayerMonkey, ball) && collisionBallMonkey(PlayerMonkey, ball);
+}
+
+function collisionMonkeyBall(PlayerMonkey, ball){
+    return PlayerMonkey.x <= ball.x + ball.width && PlayerMonkey.x + PlayerMonkey.width >= ball.x && 
+           PlayerMonkey.y + PlayerMonkey.height >= ball.y && PlayerMonkey.y <= ball.y + ball.height;
+}
+
+function collisionBallMonkey(PlayerMonkey, ball){
+    return ball.x <= PlayerMonkey.x + PlayerMonkey.width && ball.x + ball.width >= PlayerMonkey.x && 
+           ball.y + ball.height >= PlayerMonkey.y && ball.y <= PlayerMonkey.y + PlayerMonkey.height;
 }
 
 function drawNewText(txt, x, y){
