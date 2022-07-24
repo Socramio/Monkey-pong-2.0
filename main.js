@@ -46,7 +46,7 @@ function clearGame(){
     ctx.clearRect(0, 0, canvasWidth, canvasHeight);
 }
 
-// 200 pixeles a la izquierda y abajo, 
+// 200 pixels a la izquierda y abajo, 
 function drawGame(){
     player1.draw();
     player2.draw();
@@ -59,8 +59,10 @@ function drawGame(){
 function updateGame(){
     ball.update();
     if(collisionDetection(player1, ball)|| collisionDetection(player2, ball)){
-        ball.vx = ball.vx * -1;
-        ball.vy = ball.vy * 1;
+        ball.vx = ball.vx * -1.05;
+        ball.vy = ball.vy * 1.05;
+        //Proggresive speed up of ball
+
     }
     if(ball.x < -40){
         player2.score = player2.score + 1;
@@ -210,6 +212,8 @@ function drawNewText(txt, x, y){
 function gameBallReset(){
     ball.y = 300;
     ball.x = 500 - 15;
+    ball.vx = 5;
+    ball.vy = 5;
     ball.vy = ball.vy * -1;
     ball.vx = ball.vx * -1;
 }
