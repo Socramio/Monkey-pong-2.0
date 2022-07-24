@@ -11,10 +11,6 @@ var playerKeys = {
     downPressed : false,
 }
 
-window.onload = function(){
-    startGame();
-}
-
 function startGame(){
     canvas = document.getElementById("myCanvas");
     ctx = canvas.getContext("2d");
@@ -94,16 +90,17 @@ class Net {
     constructor (x, y){
         this.x = x;
         this.y = y;
-        this.width = 10;
+        this.width = 40;
         this.height = 600;
-        this.color = "gray";
     }
     draw(){
+        var image = new Image();
+        image.src = 'images/net.png';
         ctx.save();
-        ctx.fillStyle = this.color;
         ctx.fillRect(this.x, this.y, this.width, this.height);
         ctx.fill();
         ctx.restore();
+        ctx.drawImage(image, canvasWidth/2, 0)
     }
 }
 
@@ -115,7 +112,6 @@ class PlayerMonkey {
         this.y = y;
         this.width = 35;
         this.height = 150;
-        this.color = "white";
         this.speed = 15;
         this.score = 0;
         this.time = 0;
@@ -145,8 +141,9 @@ class PlayerMonkey {
     }
 
     draw(){
+        var image3 = new Image();
+        image3.src = 'images/ball.gif';
         ctx.save();
-        ctx.fillStyle = this.color;
         ctx.fillRect(this.x, this.y, this.width, this.height);
         ctx.fill();
         ctx.restore();
@@ -162,7 +159,6 @@ class ballObject {
         this.y = y;
         this.width = 40;
         this.height = 40;
-        this.color = "blue";
         this.speed = 5;
         this.score = 0;
         this.vx = 5;
@@ -170,8 +166,9 @@ class ballObject {
     }
 
     draw(){
+        var image2 = new Image();
+        image2.src = 'images/ball.gif';
         ctx.save();
-        ctx.fillStyle = this.color;
         ctx.fillRect(this.x, this.y, this.width, this.height);
         ctx.fill();
         ctx.restore();
@@ -218,3 +215,13 @@ function gameBallReset(){
     ball.vx = ball.vx * -1;
 }
 
+var startButton = document.getElementById("start-game")
+startButton.addEventListener("click", function(){
+    startGame();
+});
+
+startButton.addEventListener("click", () => {
+    startButton.style.display = "none";
+    const box = document.getElementById("box");
+    box.style.display = "block";
+  });

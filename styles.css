@@ -13,7 +13,22 @@ body {
     width: 1000px;
     height: 600 px;
     margin: 0px;
-    background-color: black;
+    background-image: url(images/canvas.png) ;
+}
+
+#button-container {
+    margin-top: 20 px;
+    text-align: center;
+}
+
+#start-game {
+    height: 40 px;
+    font-size: large;
+    font-weight: 500;
+    background-color: #ffc61f ;
+    border-color: #351d05;
+    color: #351d05;
+    border-radius: 50px;
 }
 
 #net {
@@ -21,7 +36,6 @@ body {
     left: 50%;
     position:absolute;
     border-style: dashed;
-    border-color: white;
     margin: 0 auto;
     border-width: 2px;
 }
