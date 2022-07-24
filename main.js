@@ -80,9 +80,11 @@ function gameLoop(timeStamp){
 
 function winGame(score){
     if(player1.score >= 5){
-        window.alert("Player 1 wins!")
+        pl1Screen();
+        clearGame();
     } else if(player2.score >= 5){
-        window.alert("player 2 wins!")
+        pl2Screen();
+        clearGame();
     }
 }
 
@@ -203,7 +205,7 @@ function collisionBallMonkey(PlayerMonkey, ball){
 function drawNewText(txt, x, y){
     ctx.font = "70px Bebas Neue";
     ctx.fillText(txt, x, y);
-    ctx.fillStyle = "white";
+    ctx.fillStyle = "black";
 }
 
 function gameBallReset(){
@@ -215,8 +217,21 @@ function gameBallReset(){
     ball.vx = ball.vx * -1;
 }
 
-var startButton = document.getElementById("start-game")
+var startButton = document.getElementById("start-game");
+var startScreen = document.getElementById("start-screen");
+var altScreen1 = document.getElementById("player-1-wins");
+var altScreen2 = document.getElementById("player-2-wins");
+
+function pl1Screen(){
+    altScreen1.style.display = "inline";
+}
+
+function pl2Screen(){
+    altScreen2.style.display = "inline";
+}
+
 startButton.addEventListener("click", function(){
+    startScreen.style.display = "none";
     startGame();
 });
 
