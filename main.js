@@ -6,36 +6,49 @@ var ctx = undefined;
 var gameFrames = 0;
 var gameSpeed = 1;
 
-var playerKeys = {
-    upPressed : true,
-    downPressed : false,
-}
+const music = new Audio('music/Donkey_Kong.mp3')
+const musicPlayer = new Audio('music/Colision-Player-1.mp3')
 
-function startGame(){
+keysState = {
+    87: false,
+    83: false,
+    38: false,
+    40: false
+  }
+  
+  function startGame() {
     canvas = document.getElementById("myCanvas");
     ctx = canvas.getContext("2d");
-    document.addEventListener("keydown", keyDownPressed, true);
+    document.addEventListener("keydown", keyEvent);
+    document.addEventListener("keyup", keyEvent);
     gameLoop();
-}
-
-function keyDownPressed(e){
-    if(e.keyCode == 87){     
-            player1.direction = "up";
+  }
+  
+  function keyEvent(e) {
+    if (keysState[e.keyCode] !== undefined) {
+      keysState[e.keyCode] = e.type === 'keydown';
+      keyDownPressed();
     }
-    if(e.keyCode == 83){
-            player1.direction = "down";
+  }
+  
+  function keyDownPressed() {
+    if (keysState[87]) {
+      player1.direction = "up";
+      player1.move();
     }
-    if(e.keyCode == 38){
-            player2.direction = "up";
+    if (keysState[83]) {
+      player1.direction = "down";
+      player1.move();
     }
-    if(e.keyCode == 40){
-            player2.direction = "down";
+    if (keysState[38]) {
+      player2.direction = "up";
+      player2.move();
     }
-    player1.move();
-    player2.move();
-}
-
-
+    if (keysState[40]) {
+      player2.direction = "down";
+      player2.move();
+    }
+  }  
 
 //para que no se quede el fondo borroso al actualizar frames 0 = x y = x, coordenadas de esquina inferior derecha y superior derecha
 function clearGame(){
@@ -50,15 +63,16 @@ function drawGame(){
     ball.draw();
     drawNewText(player1.score, 400, 120);
     drawNewText(player2.score, 600, 120);
+    music.play();
 }
 
 function updateGame(){
     ball.update();
     if(collisionDetection(player1, ball)|| collisionDetection(player2, ball)){
+        musicPlayer.play();
         ball.vx = ball.vx * -1.05;
         ball.vy = ball.vy * 1.05;
         //Proggresive speed up of ball
-
     }
     if(ball.x < -40){
         player2.score = player2.score + 1;
@@ -82,9 +96,11 @@ function winGame(score){
     if(player1.score >= 5){
         pl1Screen();
         clearGame();
+        music.pause();
     } else if(player2.score >= 5){
         pl2Screen();
         clearGame();
+        music.pause();
     }
 }
 
@@ -98,21 +114,24 @@ class Net {
     draw(){
         var image = new Image();
         image.src = 'images/net.png';
-        ctx.save();
-        ctx.fillRect(this.x, this.y, this.width, this.height);
-        ctx.fill();
-        ctx.restore();
+        // ctx.save();
+        // ctx.fillRect(this.x, this.y, this.width, this.height);
+        // ctx.fill();
+        // ctx.restore();
         ctx.drawImage(image, canvasWidth/2, 0)
     }
 }
 
+// Leer funcionamiento de drawImage para alterar dimensiones, 
+
 let middle = new Net(canvasWidth/2, 0);
 
 class PlayerMonkey {
-    constructor (x, y){
+    constructor (x, y, image){
         this.x = x;
         this.y = y;
-        this.width = 35;
+        this.image = image;
+        this.width = 120;
         this.height = 150;
         this.speed = 15;
         this.score = 0;
@@ -144,23 +163,24 @@ class PlayerMonkey {
 
     draw(){
         var image3 = new Image();
-        image3.src = 'images/ball.gif';
-        ctx.save();
-        ctx.fillRect(this.x, this.y, this.width, this.height);
-        ctx.fill();
-        ctx.restore();
+        image3.src = this.image;
+        // ctx.save();
+        // ctx.fillRect(this.x, this.y, this.width, this.height);
+        // // ctx.fill();
+        // ctx.restore();
+        ctx.drawImage(image3, this.x , this.y,this.width, this.height);
     }
 }
 
-let player1 = new PlayerMonkey(5, canvasHeight/2 - 75);
-let player2 = new PlayerMonkey(canvasWidth - 40, canvasHeight/2 - 75);
+let player1 = new PlayerMonkey(5, canvasHeight/2 - 75, 'images/monkey1.png');
+let player2 = new PlayerMonkey(canvasWidth - 120, canvasHeight/2 - 75, 'images/monkey2.png');
 
 class ballObject {
     constructor (x, y){
         this.x = x;
         this.y = y;
-        this.width = 40;
-        this.height = 40;
+        this.width = 50;
+        this.height = 50;
         this.speed = 5;
         this.score = 0;
         this.vx = 5;
@@ -170,10 +190,10 @@ class ballObject {
     draw(){
         var image2 = new Image();
         image2.src = 'images/ball.gif';
-        ctx.save();
-        ctx.fillRect(this.x, this.y, this.width, this.height);
-        ctx.fill();
-        ctx.restore();
+        // ctx.save();
+        // ctx.fillRect(this.x, this.y, this.width, this.height);
+        // ctx.restore();
+        ctx.drawImage(image2, this.x, this.y, this.width, this.height)
     }
 
     update(){
@@ -187,6 +207,8 @@ class ballObject {
 }
 
 let ball = new ballObject(canvasWidth/2 -15, canvasHeight/2 -15);
+
+
 
 function collisionDetection(PlayerMonkey, ball){
     return collisionMonkeyBall(PlayerMonkey, ball) && collisionBallMonkey(PlayerMonkey, ball);
