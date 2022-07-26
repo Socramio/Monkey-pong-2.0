@@ -6,8 +6,9 @@ var ctx = undefined;
 var gameFrames = 0;
 var gameSpeed = 1;
 
-const music = new Audio('music/Donkey_Kong.mp3')
-const musicPlayer = new Audio('music/Colision-Player-1.mp3')
+const music = new Audio('music/Donkey_Kong.mp3');
+const musicPlayer = new Audio('music/Colision-Player-1.mp3');
+const musicPoint = new Audio('music/Goal-Sound.mp3');
 
 keysState = {
     87: false,
@@ -17,6 +18,9 @@ keysState = {
   }
   
   function startGame() {
+    player1.score = 0;
+    player2.score = 0;
+    gameBallReset();
     canvas = document.getElementById("myCanvas");
     ctx = canvas.getContext("2d");
     document.addEventListener("keydown", keyEvent);
@@ -55,7 +59,6 @@ function clearGame(){
     ctx.clearRect(0, 0, canvasWidth, canvasHeight);
 }
 
-// 200 pixels a la izquierda y abajo, 
 function drawGame(){
     player1.draw();
     player2.draw();
@@ -63,6 +66,10 @@ function drawGame(){
     ball.draw();
     drawNewText(player1.score, 400, 120);
     drawNewText(player2.score, 600, 120);
+    player1.name = "PLAYER 1";
+    player2.name = "PLAYER 2";
+    drawNewName(player1.name, 130, 50);
+    drawNewName(player2.name, 800, 50);
     music.play();
 }
 
@@ -76,10 +83,12 @@ function updateGame(){
     }
     if(ball.x < -40){
         player2.score = player2.score + 1;
+        musicPoint.play();
         gameBallReset();
     }
     else if(ball.x > canvasWidth){
         player1.score = player1.score + 1;
+        musicPoint.play();
         gameBallReset();
     }
 }
@@ -97,10 +106,16 @@ function winGame(score){
         pl1Screen();
         clearGame();
         music.pause();
+        musicPlayer.pause();
+        musicPoint.pause();
+        restartButton.style.display = "inline";
     } else if(player2.score >= 5){
         pl2Screen();
         clearGame();
         music.pause();
+        musicPlayer.pause();
+        musicPoint.pause();
+        restartButton.style.display = "inline";
     }
 }
 
@@ -114,15 +129,9 @@ class Net {
     draw(){
         var image = new Image();
         image.src = 'images/net.png';
-        // ctx.save();
-        // ctx.fillRect(this.x, this.y, this.width, this.height);
-        // ctx.fill();
-        // ctx.restore();
         ctx.drawImage(image, canvasWidth/2, 0)
     }
 }
-
-// Leer funcionamiento de drawImage para alterar dimensiones, 
 
 let middle = new Net(canvasWidth/2, 0);
 
@@ -131,6 +140,7 @@ class PlayerMonkey {
         this.x = x;
         this.y = y;
         this.image = image;
+        this.name = 0;
         this.width = 120;
         this.height = 150;
         this.speed = 15;
@@ -164,10 +174,6 @@ class PlayerMonkey {
     draw(){
         var image3 = new Image();
         image3.src = this.image;
-        // ctx.save();
-        // ctx.fillRect(this.x, this.y, this.width, this.height);
-        // // ctx.fill();
-        // ctx.restore();
         ctx.drawImage(image3, this.x , this.y,this.width, this.height);
     }
 }
@@ -181,8 +187,6 @@ class ballObject {
         this.y = y;
         this.width = 50;
         this.height = 50;
-        this.speed = 5;
-        this.score = 0;
         this.vx = 5;
         this.vy = 5;
     }
@@ -190,9 +194,6 @@ class ballObject {
     draw(){
         var image2 = new Image();
         image2.src = 'images/ball.gif';
-        // ctx.save();
-        // ctx.fillRect(this.x, this.y, this.width, this.height);
-        // ctx.restore();
         ctx.drawImage(image2, this.x, this.y, this.width, this.height)
     }
 
@@ -200,7 +201,6 @@ class ballObject {
         if(this.y < 0 || this.y > canvasHeight - this.height){
             this.vy = this.vy * -1;
         }
-
         this.x -= this.vx;
         this.y -= this.vy;
     }
@@ -230,19 +230,25 @@ function drawNewText(txt, x, y){
     ctx.fillStyle = "black";
 }
 
+function drawNewName(txt, x, y){
+    ctx.font = "20px Bebas Neue";
+    ctx.fillText(txt, x, y);
+    ctx.fillStyle = "black";
+}
+
 function gameBallReset(){
     ball.y = 300;
     ball.x = 500 - 15;
     ball.vx = 5;
     ball.vy = 5;
-    ball.vy = ball.vy * -1;
-    ball.vx = ball.vx * -1;
 }
 
 var startButton = document.getElementById("start-game");
 var startScreen = document.getElementById("start-screen");
 var altScreen1 = document.getElementById("player-1-wins");
 var altScreen2 = document.getElementById("player-2-wins");
+var restartButton = document.getElementById("restart");
+var box = document.getElementById("button-container");
 
 function pl1Screen(){
     altScreen1.style.display = "inline";
@@ -254,11 +260,13 @@ function pl2Screen(){
 
 startButton.addEventListener("click", function(){
     startScreen.style.display = "none";
+    startButton.style.display = "none";
     startGame();
 });
 
-startButton.addEventListener("click", () => {
-    startButton.style.display = "none";
-    const box = document.getElementById("box");
-    box.style.display = "block";
-  });
+restartButton.addEventListener("click", function(){
+    altScreen1.style.display = "none";
+    altScreen2.style.display = "none";
+    restartButton.style.display = "none";
+    startGame();
+});

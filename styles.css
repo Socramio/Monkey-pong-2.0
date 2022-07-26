@@ -59,6 +59,16 @@ body {
     border-radius: 50px;
 }
 
+#restart {
+    height: 40 px;
+    font-size: large;
+    font-weight: 500;
+    background-color: #ffc61f ;
+    border-color: #351d05;
+    color: #351d05;
+    border-radius: 50px;
+}
+
 #net {
     height: 600px;
     left: 50%;
