@@ -92,17 +92,19 @@ function updateGame(){
         gameBallReset();
     }
 }
+var animation; 
 
 function gameLoop(timeStamp){
     clearGame();
     drawGame();
-    winGame();
     updateGame();
-    window.requestAnimationFrame(gameLoop);
+    winGame();
+    animation = requestAnimationFrame(gameLoop);
 }
 
 function winGame(score){
     if(player1.score >= 5){
+        cancelAnimationFrame(animation);
         pl1Screen();
         clearGame();
         music.pause();
@@ -110,6 +112,7 @@ function winGame(score){
         musicPoint.pause();
         restartButton.style.display = "inline";
     } else if(player2.score >= 5){
+        cancelAnimationFrame(animation);
         pl2Screen();
         clearGame();
         music.pause();
@@ -143,7 +146,7 @@ class PlayerMonkey {
         this.name = 0;
         this.width = 120;
         this.height = 150;
-        this.speed = 15;
+        this.speed = 20;
         this.score = 0;
         this.time = 0;
         this.direction = 0;
