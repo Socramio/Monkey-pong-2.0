@@ -7,11 +7,11 @@ var gameFrames = 0;
 var gameSpeed = 1;
 
 const music = new Audio('music/Donkey_Kong.mp3');
-music.volume = 0.3;
+music.volume = 0.1;
 const musicPlayer = new Audio('music/Colision-Player-1.mp3');
-musicPlayer.volume = 0.5;
+musicPlayer.volume = 0.2;
 const musicPoint = new Audio('music/Goal-Sound.mp3');
-musicPoint.volume = 0.3;
+musicPoint.volume = 0.1;
 
 keysState = {
     87: false,
