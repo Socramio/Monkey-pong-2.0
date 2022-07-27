@@ -31,11 +31,10 @@ keysState = {
   function keyEvent(e) {
     if (keysState[e.keyCode] !== undefined) {
       keysState[e.keyCode] = e.type === 'keydown';
-      keyDownPressed();
     }
   }
   
-  function keyDownPressed() {
+  function changeKeyState() {
     if (keysState[87]) {
       player1.direction = "up";
       player1.move();
@@ -94,11 +93,12 @@ function updateGame(){
 }
 var animation; 
 
-function gameLoop(timeStamp){
+function gameLoop(){
     clearGame();
+    changeKeyState();
     drawGame();
     updateGame();
-    winGame();
+    if(winGame()) return;
     animation = requestAnimationFrame(gameLoop);
 }
 
@@ -111,6 +111,7 @@ function winGame(score){
         musicPlayer.pause();
         musicPoint.pause();
         restartButton.style.display = "inline";
+        return true;
     } else if(player2.score >= 5){
         cancelAnimationFrame(animation);
         pl2Screen();
@@ -119,6 +120,7 @@ function winGame(score){
         musicPlayer.pause();
         musicPoint.pause();
         restartButton.style.display = "inline";
+        return true;
     }
 }
 
@@ -146,7 +148,7 @@ class PlayerMonkey {
         this.name = 0;
         this.width = 120;
         this.height = 150;
-        this.speed = 20;
+        this.speed = 15;
         this.score = 0;
         this.time = 0;
         this.direction = 0;
