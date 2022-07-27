@@ -72,14 +72,22 @@ function drawGame(){
     music.play();
 }
 
+var enableCollisionDetection = true;
+
 function updateGame(){
     ball.update();
-    if(collisionDetection(player1, ball)|| collisionDetection(player2, ball)){
+    if(enableCollisionDetection){
+    if(collisionMonkeyBall(player1, ball)|| collisionMonkeyBall(player2, ball)){
         musicPlayer.play();
         ball.vx = ball.vx * -1.05;
         ball.vy = ball.vy * 1.05;
         //Proggresive speed up of ball
+        enableCollisionDetection = false;
+        setTimeout(() => {
+            enableCollisionDetection = true;
+        }, 1000);
     }
+}
     if(ball.x < -40){
         player2.score = player2.score + 1;
         musicPoint.play();
@@ -213,20 +221,9 @@ class ballObject {
 
 let ball = new ballObject(canvasWidth/2 -15, canvasHeight/2 -15);
 
-
-
-function collisionDetection(PlayerMonkey, ball){
-    return collisionMonkeyBall(PlayerMonkey, ball) && collisionBallMonkey(PlayerMonkey, ball);
-}
-
 function collisionMonkeyBall(PlayerMonkey, ball){
     return PlayerMonkey.x <= ball.x + ball.width && PlayerMonkey.x + PlayerMonkey.width >= ball.x && 
            PlayerMonkey.y + PlayerMonkey.height >= ball.y && PlayerMonkey.y <= ball.y + ball.height;
-}
-
-function collisionBallMonkey(PlayerMonkey, ball){
-    return ball.x <= PlayerMonkey.x + PlayerMonkey.width && ball.x + ball.width >= PlayerMonkey.x && 
-           ball.y + ball.height >= PlayerMonkey.y && ball.y <= PlayerMonkey.y + PlayerMonkey.height;
 }
 
 function drawNewText(txt, x, y){
